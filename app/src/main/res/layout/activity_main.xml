@@ -5,15 +5,63 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@drawable/back_ground">
 
     <TextView
+        android:id="@+id/tvTitleShadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="205dp"
+        android:layout_marginTop="112dp"
+        android:text="    SEA\nBATTLE"
+        android:textSize="46dp"
+        android:textStyle="bold"
+        android:textColor="@color/Dark_blue"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="208dp"
+        android:layout_marginTop="112dp"
+        android:text="    SEA\nBATTLE"
+        android:textColor="@color/white"
+        android:textSize="44dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnPlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="@+id/tvTitleShadow"
+        app:layout_constraintStart_toStartOf="@+id/tvTitleShadow"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitleShadow"
+        android:background="#00FFFFFF"
+        android:textColor="@color/Dark_blue"
+        android:text="  PLAY"
+        android:textStyle="bold"
+        app:drawableEndCompat="@android:drawable/ic_media_play"
+        android:textSize="30dp"/>
+
+    <Button
+        android:id="@+id/btnSetting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="300dp"
+        android:hint="."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnPlay"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:backgroundTint="@color/Dark_blue"
+        app:drawableEndCompat="@android:drawable/ic_menu_manage"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
