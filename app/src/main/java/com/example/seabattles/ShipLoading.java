@@ -329,18 +329,25 @@ public class ShipLoading extends AppCompatActivity {
                         // Kiểm tra xem có tàu nào chìm không
                         Ship sunkShip = getSunkShip(P1Ships, myAI.shipHits());
                         if (sunkShip != null) {
-                            // Tàu chìm: xóa vị trí của tàu khỏi shipHits và làm sạch highValueHits
+                            // Tàu chìm: xóa vị trí của tàu khỏi shipHits
                             myAI.removeShipPositions(sunkShip.shipPosition());
+                            myAI.setCurrentDirection(null);
                         } else {
                             // Tàu chưa chìm: thêm ô lân cận thông minh
                             if (myAI.shipHits().size() == 1) {
                                 // Trúng ô đầu tiên: thêm tất cả ô lân cận
                                 myAI.addHighValueHits(AIShot);
+                                myAI.setCurrentDirection(null);
                             } else if (myAI.shipHits().size() >= 2) {
                                 // Trúng ít nhất 2 ô: xác định hướng và thêm ô tiếp theo
                                 Position lastHit = myAI.shipHits().get(myAI.shipHits().size() - 1);
                                 Position secondLastHit = myAI.shipHits().get(myAI.shipHits().size() - 2);
-                                String direction = myAI.getDirection(secondLastHit, lastHit);
+                                String direction = myAI.getCurrentDirection();
+
+                                if (direction == null) {
+                                    direction = myAI.getDirection(secondLastHit, lastHit);
+                                    myAI.setCurrentDirection(direction);
+                                }
 
                                 if (direction != null) {
                                     // Thêm ô tiếp theo theo hướng hiện tại
@@ -350,11 +357,13 @@ public class ShipLoading extends AppCompatActivity {
                                     } else {
                                         // Nếu trượt hướng này, thử hướng ngược lại
                                         String oppositeDirection = myAI.getOppositeDirection(direction);
-                                        Position oppositePos = myAI.getNextPosition(secondLastHit, oppositeDirection);
+                                        Position oppositePos = myAI.getNextValidPosition(secondLastHit, oppositeDirection);
                                         if (oppositePos != null && myAI.getValueHits().contains(oppositePos)) {
                                             myAI.getHighValueHits().addFirst(oppositePos);
-                                        } else {
-                                            myAI.addHighValueHits(myAI.shipHits().get(0));
+                                            myAI.setCurrentDirection(oppositeDirection);
+                                            if (myAI.getValueHits().contains(oppositePos)) {
+                                                myAI.getHighValueHits().addFirst(oppositePos);
+                                            }
                                         }
                                     }
                                 } else {
@@ -369,6 +378,16 @@ public class ShipLoading extends AppCompatActivity {
                     rowsP1[position] = "X";
                     turn = true;
                     Bot.setEnabled(true);
+                    if (mode.equals("HARD") && myAI.getCurrentDirection() != null) {
+                        String direction = myAI.getCurrentDirection();
+                        String oppositeDirection = myAI.getOppositeDirection(direction);
+                        myAI.setCurrentDirection(oppositeDirection);
+                        Position secondLastHit = myAI.shipHits().get(myAI.shipHits().size() - 1);
+                        Position oppositePos = myAI.getNextValidPosition(secondLastHit, oppositeDirection);
+                        if (oppositePos != null && myAI.getValueHits().contains(oppositePos)) {
+                            myAI.getHighValueHits().addFirst(oppositePos);
+                        }
+                    }
                 }
                 adapterP1.notifyDataSetChanged();
 

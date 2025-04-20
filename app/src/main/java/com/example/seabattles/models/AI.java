@@ -10,12 +10,14 @@ public class AI {
     private List<Position> shipHits;
     private List<Position> valueHits;
     private ArrayDeque<Position> highValueHits;
+    private String currentDirection;
 
     public AI(String mode, int width, int length) {
         Mode = mode;
         valueHits = createNewValueHits(width, length);
         highValueHits = new ArrayDeque<Position>();
         shipHits = new ArrayList<Position>();
+        currentDirection = null;
     }
 
     public List<Position> createNewValueHits(int width, int length){
@@ -120,6 +122,24 @@ public class AI {
         highValueHits.removeAll(positionsToRemove);
     }
 
+    public Position getNextValidPosition(Position start, String direction) {
+        Position nextPos = getNextPosition(start, direction);
+        while (nextPos != null) {
+            if (valueHits.contains(nextPos)) {
+                return nextPos; // Ô chưa bắn, trả về
+            }
+            if (shipHits.contains(nextPos)) {
+                // Ô đã trúng, tiếp tục đi theo hướng
+                start = nextPos;
+                nextPos = getNextPosition(start, direction);
+            } else {
+                // Ô đã bắn trượt hoặc ngoài lưới, dừng lại
+                return null;
+            }
+        }
+        return null;
+    }
+
     public List<Position> getValueHits() {
         return valueHits;
     }
@@ -147,5 +167,13 @@ public class AI {
 
     public void setHighValueHits(ArrayDeque<Position> highValueHits) {
         this.highValueHits = highValueHits;
+    }
+
+    public String getCurrentDirection() {
+        return currentDirection;
+    }
+
+    public void setCurrentDirection(String currentDirection) {
+        this.currentDirection = currentDirection;
     }
 }
