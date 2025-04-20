@@ -32,7 +32,7 @@
             android:text="@string/game_instructions"
             android:textStyle="bold"
             android:textSize="18sp"
-            android:textColor="@color/black"
+            android:textColor="@color/Dark_blue"
             android:layout_marginTop="150dp"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
