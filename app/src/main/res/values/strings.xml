@@ -1,3 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">SeaBattles</string>
+    <string name="app_name">Sea Battles</string>
+    <string name="game_instructions">
+        Chào mừng bạn đến với Sea Battle!\n\n
+        Cách chơi:\n
+        1. Sắp xếp các tàu chiến của bạn trên lưới bằng cách chọn vị trí.\n
+        2. Lần lượt bắn vào lưới của đối thủ.\n
+        3. Chạm vào một ô để tấn công.\n
+        4. Đánh chìm tất cả tàu của đối thủ để chiến thắng!\n\n
+        Mẹo chơi:\n
+        - Sắp xếp tàu một cách chiến lược để khó bị phát hiện.\n
+        - Chọn mức độ khó để thử thách bản thân.\n
+        - Quan sát cách tấn công của đối thủ để đoán vị trí tàu.\n\n
+        Chúc bạn vui vẻ và chiến thắng, Đô đốc!
+    </string>
 </resources>

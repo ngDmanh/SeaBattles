@@ -15,7 +15,7 @@
         android:layout_marginStart="205dp"
         android:layout_marginTop="112dp"
         android:text="    SEA\nBATTLE"
-        android:textSize="46dp"
+        android:textSize="46sp"
         android:textStyle="bold"
         android:textColor="@color/Dark_blue"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +29,7 @@
         android:layout_marginTop="112dp"
         android:text="    SEA\nBATTLE"
         android:textColor="@color/white"
-        android:textSize="44dp"
+        android:textSize="44sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -42,26 +42,39 @@
         app:layout_constraintEnd_toEndOf="@+id/tvTitleShadow"
         app:layout_constraintStart_toStartOf="@+id/tvTitleShadow"
         app:layout_constraintTop_toBottomOf="@+id/tvTitleShadow"
-        android:background="#00FFFFFF"
+        android:background="@color/Gray_white"
         android:textColor="@color/Dark_blue"
         android:text="  PLAY"
         android:textStyle="bold"
         app:drawableEndCompat="@android:drawable/ic_media_play"
-        android:textSize="30dp"/>
+        android:textSize="30sp"/>
 
     <Button
-        android:id="@+id/btnSetting"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="300dp"
-        android:hint="."
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnPlay"
+        android:id="@+id/ibMusic"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:background="@drawable/custom_button"
+        android:text="Music:"
+        app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:backgroundTint="@color/Dark_blue"
-        app:drawableEndCompat="@android:drawable/ic_menu_manage"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.092"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.807" />
+
+    <Button
+        android:id="@+id/ibSound"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:background="@drawable/custom_button"
+        android:layout_marginTop="10dp"
+        android:text="Sound:"
+        app:backgroundTint="@null"
+        app:layout_constraintEnd_toEndOf="@+id/ibMusic"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/ibMusic"
+        app:layout_constraintTop_toBottomOf="@+id/ibMusic" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
