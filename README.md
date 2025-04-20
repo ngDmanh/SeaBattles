@@ -44,3 +44,35 @@ Dưới đây là các bước để clone và thiết lập dự án **Sea Batt
 - Đảm bảo bạn đã cài đặt **Git** và **Android Studio** trên máy.
 - Kiểm tra kết nối internet để clone dự án thành công.
 - Nếu gặp lỗi khi mở dự án, hãy kiểm tra phiên bản Gradle và cập nhật nếu cần.
+
+# Giao diện game
+Dưới đây là một số hình ảnh giao diện của game **Sea Battles**
+
+1. **Giao diện màn hình chính**
+
+   ![Picture1](https://github.com/user-attachments/assets/5deb5f46-236c-49ff-b938-c72a11d7217b)
+   
+2. **Giao diện chọn độ khó**
+
+   ![Picture2](https://github.com/user-attachments/assets/1c79dc46-4484-488d-880e-b865b2508715)
+
+3. **Giao diện hướng dẫn cách chơi**
+
+   ![Picture3](https://github.com/user-attachments/assets/1723ed32-7e49-49e1-a87e-caab91a5ee6f)
+
+4. **Giao diện chơi game**
+
+
+   ![Picture4](https://github.com/user-attachments/assets/f9a97806-c54e-46d8-a79f-c8ef53a0caa0)
+   
+
+   ![Picture5](https://github.com/user-attachments/assets/5dbe9ca1-0b7c-44be-9d0e-ef3b8130f06f)
+   
+
+   ![Picture6](https://github.com/user-attachments/assets/5a497634-8f2c-412f-aceb-a2de84c13925)
+   
+
+5. **Giao diện thông báo kết quả**
+
+   ![Picture7](https://github.com/user-attachments/assets/007727cb-45d6-46e6-adb3-5bd989b659a9)
+
