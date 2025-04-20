@@ -442,14 +442,14 @@ public class ShipLoading extends AppCompatActivity {
                     autoShot(rowsP1, adapterP1, P1Ships, myAI, Length);
                 }
             }
-        }, 300);
+        }, 500);
     }
 
     private Ship getSunkShip(List<Ship> ships, List<Position> shipHits) {
         for (Ship ship : ships) {
             List<Position> shipPositions = ship.shipPosition();
             if (shipHits.containsAll(shipPositions)) {
-                return ship; // Tàu chìm nếu tất cả vị trí của nó đều bị trúng
+                return ship;
             }
         }
         return null;
