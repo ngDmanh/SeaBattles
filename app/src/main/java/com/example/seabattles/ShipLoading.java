@@ -64,7 +64,7 @@ public class ShipLoading extends AppCompatActivity {
         Intent i = getIntent();
         mode = i.getStringExtra("DIFFICULTY");
         random = new Random();
-        myAI = new AI(mode, Width, Length);
+        myAI = new AI(Width, Length);
 
         P1Ships = new ArrayList<>();
         currentShipPositions = new ArrayList<>();

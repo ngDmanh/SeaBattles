@@ -6,14 +6,12 @@ import java.util.List;
 import java.util.Random;
 
 public class AI {
-    private String Mode;
     private List<Position> shipHits;
     private List<Position> valueHits;
     private ArrayDeque<Position> highValueHits;
     private String currentDirection;
 
-    public AI(String mode, int width, int length) {
-        Mode = mode;
+    public AI(int width, int length) {
         valueHits = createNewValueHits(width, length);
         highValueHits = new ArrayDeque<Position>();
         shipHits = new ArrayList<Position>();
