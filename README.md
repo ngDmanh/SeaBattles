@@ -23,17 +23,17 @@ Dưới đây là các bước để clone và thiết lập dự án **Sea Batt
    ![Cửa sổ Git Bash](https://github.com/user-attachments/assets/43b811a7e-533f-4e2a-9f43-0b152596d9e6)
 
 3. **Clone dự án từ GitHub**  
-   Sử dụng lệnh sau để clone dự án về máy: 
-   Ví dụ: Clone dự án **Sea Battles**: 
+   Sử dụng lệnh sau để clone dự án về máy:  
+   Ví dụ: Clone dự án **Sea Battles**:  
    git clone https://github.com/<your-username>/SeaBattles.git
 
-![Clone dự án](https://github.com/user-attachments/assets/245d15843-8b64-44fd-aebc-60f464abaff09)
+   ![Clone dự án](https://github.com/user-attachments/assets/245d15843-8b64-44fd-aebc-60f464abaff09)
 
 4. **Mở dự án trong Android Studio**  
-Sau khi clone, truy cập vào thư mục chính của dự án (thư mục chứa file `build.gradle`).  
-Mở Android Studio, chọn **Open**, và duyệt đến thư mục dự án vừa clone.
+   Sau khi clone, truy cập vào thư mục chính của dự án (thư mục chứa file `build.gradle`).  
+   Mở Android Studio, chọn **Open**, và duyệt đến thư mục dự án vừa clone.
 
-![Mở dự án trong Android Studio](https://github.com/user-attachments/assets/2ec73737-78ca-42bc-9f8c-2326dcdf06)
+   ![Mở dự án trong Android Studio](https://github.com/user-attachments/assets/2ec73737-78ca-42bc-9f8c-2326dcdf06)
 
 ## Lưu Ý
 - Đảm bảo bạn đã cài đặt **Git** và **Android Studio** trên máy.
