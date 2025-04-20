@@ -10,18 +10,12 @@ public class AI {
     private List<Position> shipHits;
     private List<Position> valueHits;
     private ArrayDeque<Position> highValueHits;
-    private Position lastHit1; // Lần trúng đầu tiên trong chuỗi
-    private Position lastHit2; // Lần trúng thứ hai trong chuỗi
-    private String direction;
 
     public AI(String mode, int width, int length) {
         Mode = mode;
         valueHits = createNewValueHits(width, length);
         highValueHits = new ArrayDeque<Position>();
         shipHits = new ArrayList<Position>();
-        lastHit1 = null;
-        lastHit2 = null;
-        direction = null;
     }
 
     public List<Position> createNewValueHits(int width, int length){
@@ -65,6 +59,44 @@ public class AI {
         highValueHits.addAll(neighbours);
     }
 
+    public void removeShipPositions(List<Position> sunkShipPositions) {
+        shipHits.removeAll(sunkShipPositions);
+    }
+
+    // Xác định hướng giữa hai vị trí
+    public String getDirection(Position pos1, Position pos2) {
+        if (pos1.x() == pos2.x()) {
+            if (pos1.y() + 1 == pos2.y()) return "DOWN";
+            if (pos1.y() - 1 == pos2.y()) return "UP";
+        } else if (pos1.y() == pos2.y()) {
+            if (pos1.x() + 1 == pos2.x()) return "RIGHT";
+            if (pos1.x() - 1 == pos2.x()) return "LEFT";
+        }
+        return null;
+    }
+
+    // Lấy hướng ngược lại
+    public String getOppositeDirection(String direction) {
+        switch (direction) {
+            case "UP": return "DOWN";
+            case "DOWN": return "UP";
+            case "LEFT": return "RIGHT";
+            case "RIGHT": return "LEFT";
+            default: return null;
+        }
+    }
+
+    // Lấy vị trí tiếp theo theo hướng
+    public Position getNextPosition(Position pos, String direction) {
+        switch (direction) {
+            case "UP": return pos.getNeibourUp();
+            case "DOWN": return pos.getNeibourDown();
+            case "LEFT": return pos.getNeibourLeft();
+            case "RIGHT": return pos.getNeibourRight();
+            default: return null;
+        }
+    }
+
     public void resetHighValueHits() {
         highValueHits.clear();
     }
@@ -86,57 +118,6 @@ public class AI {
         }
         // Xóa các vị trí lân cận khỏi highValueHits
         highValueHits.removeAll(positionsToRemove);
-    }
-
-    // Xác định hướng dựa trên hai lần trúng
-    private void determineDirection(Position hit1, Position hit2) {
-        if (hit1.x() == hit2.x() && Math.abs(hit1.y() - hit2.y()) == 1) {
-            direction = "VERTICAL";
-        } else if (hit1.y() == hit2.y() && Math.abs(hit1.x() - hit2.x()) == 1) {
-            direction = "HORIZONTAL";
-        } else {
-            direction = null; // Các lần trúng không liền kề
-        }
-    }
-
-    // Lấy vị trí tiếp theo để bắn theo hướng đã xác định
-    public Position getNextDirectionalShot(Position lastHit) {
-        if (direction == null || lastHit == null) return null;
-        List<Position> candidates = new ArrayList<>();
-        if (direction.equals("HORIZONTAL")) {
-            Position left = lastHit.getNeibourLeft();
-            Position right = lastHit.getNeibourRight();
-            if (valueHits.contains(left)) candidates.add(left);
-            if (valueHits.contains(right)) candidates.add(right);
-        } else if (direction.equals("VERTICAL")) {
-            Position up = lastHit.getNeibourUp();
-            Position down = lastHit.getNeibourDown();
-            if (valueHits.contains(up)) candidates.add(up);
-            if (valueHits.contains(down)) candidates.add(down);
-        }
-        if (candidates.isEmpty()) {
-            // Không có vị trí hợp lệ theo hướng này, thử đầu kia nếu có hai lần trúng
-            if (lastHit2 != null && lastHit.equals(lastHit2)) {
-                return getNextDirectionalShot(lastHit1);
-            }
-            return null;
-        }
-        Random random = new Random();
-        return candidates.get(random.nextInt(candidates.size()));
-    }
-
-    // Cập nhật theo dõi lần trúng cho chế độ HARD
-    public void updateHitTracking(Position hit) {
-        if (lastHit1 == null) {
-            lastHit1 = hit;
-        } else if (lastHit2 == null) {
-            lastHit2 = hit;
-            determineDirection(lastHit1, lastHit2);
-        } else {
-            // Tiếp tục theo hướng, cập nhật lần trúng cuối
-            lastHit2 = hit;
-        }
-        shipHits.add(hit);
     }
 
     public List<Position> getValueHits() {

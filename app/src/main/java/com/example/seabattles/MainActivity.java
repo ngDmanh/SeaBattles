@@ -12,8 +12,8 @@ import com.example.seabattles.models.MusicPlayer;
 public class MainActivity extends AppCompatActivity {
 
     private Button btnPlay;
-    private Button ibSound; // Điều khiển âm thanh phím
-    private Button ibMusic; // Điều khiển nhạc nền
+    private Button ibSound;
+    private Button ibMusic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
