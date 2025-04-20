@@ -186,6 +186,15 @@ public class ShipLoading extends AppCompatActivity {
             public void onClick(View v) {
                 MusicPlayer.getInstance().playClickSound();
                 if (isPlacingShips) {
+                    for (Ship ship : P1Ships) {
+                        List<Position> positions = ship.shipPosition();
+                        for (int i = 0; i < positions.size(); i++) {
+                            Position pos = positions.get(i);
+                            int posIdx = pos.y() * Length + pos.x();
+                            View cellView = P1.getChildAt(posIdx);
+                            cellView.setBackgroundResource(R.drawable.item_shape);
+                        }
+                    }
                     P1Ships.clear();
                     currentShipPositions.clear();
                     Arrays.fill(rowsP1, "");
@@ -321,7 +330,7 @@ public class ShipLoading extends AppCompatActivity {
                         Bot.setEnabled(false);
                         autoShot(rowsP1, adapterP1, P1Ships, myAI, Length);
                     }
-                    if (Wining(BotShips, rowsP1, Length)) {
+                    if (Wining(BotShips, rowsBot, Length)) {
                         showWinDialog("VICTORY");
                     }
                 }
