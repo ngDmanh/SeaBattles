@@ -40,6 +40,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation("androidx.gridlayout:gridlayout:1.0.0") // Để tạo lưới
-    implementation("com.google.android.material:material:1.9.0") // UI Material Design
+    implementation("androidx.gridlayout:gridlayout:1.0.0")
+    implementation("com.google.android.material:material:1.9.0")
 }

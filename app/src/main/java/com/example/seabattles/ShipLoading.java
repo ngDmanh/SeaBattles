@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.Toast;
 
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,10 +25,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-
 public class ShipLoading extends AppCompatActivity {
     private GridView Bot, P1;
-    private Button btnDirection;
+    private Button btnDirection, btnRanDom;
     private AI myAI;
     private List<Ship> P1Ships;
     private List<Ship> BotShips;
@@ -42,7 +40,9 @@ public class ShipLoading extends AppCompatActivity {
     private int currentShipIndex = 0;
     private List<Position> currentShipPositions;
     private boolean isHorizontal = true;
+    private String[] rowsBot;
     private String[] rowsP1;
+    private ArrayAdapter<String> adapterBot;
     private ArrayAdapter<String> adapterP1;
     private Random random;
     private String mode;
@@ -52,7 +52,9 @@ public class ShipLoading extends AppCompatActivity {
         P1 = findViewById(R.id.P1);
         btnDirection = findViewById(R.id.btndirection);
         btnBack = findViewById(R.id.btnBack);
+        btnRanDom = findViewById(R.id.btnRanDom);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,27 +66,31 @@ public class ShipLoading extends AppCompatActivity {
         random = new Random();
         myAI = new AI(mode, Width, Length);
 
-        P1Ships = new ArrayList<>(); // Khởi tạo danh sách tàu người chơi
-        currentShipPositions = new ArrayList<>(); // Khởi tạo danh sách vị trí tạm
+        P1Ships = new ArrayList<>();
+        currentShipPositions = new ArrayList<>();
 
-        // Đặt tàu ngẫu nhiên cho AI
-        BotShips = generateRandomShips(Width, Length);
+        BotShips = generateRandomShips(Width, Length, shipSizes, random);
+        if (BotShips.isEmpty()) {
+            Toast.makeText(this, "Không thể tạo tàu cho AI!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
-        // Thiết lập GridView cho AI
-        Bot.setNumColumns(Length); // Đặt số cột cho lưới (10)
-        final String[] rowsP1 = new String[Width * Length]; // Mảng lưu trạng thái ô lưới
-        Arrays.fill(rowsP1, ""); // Khởi tạo lưới trống
-
-        ArrayAdapter<String> adapterP1 = new ArrayAdapter<String>(this, R.layout.item, rowsP1) {};
-        Bot.setAdapter(adapterP1);
+        Bot.setNumColumns(Length);
+        rowsBot = new String[Width * Length];
+        Arrays.fill(rowsBot, "");
+        adapterBot = new ArrayAdapter<>(this, R.layout.item, rowsBot);
+        Bot.setAdapter(adapterBot);
         Bot.setEnabled(false);
 
+        // Thiết lập GridView cho người chơi
         P1.setNumColumns(Length);
-        this.rowsP1 = new String[Width * Length];
-        Arrays.fill(this.rowsP1, "");
-        this.adapterP1 = new ArrayAdapter<String>(this, R.layout.item, ShipLoading.this.rowsP1) {};
-        P1.setAdapter(this.adapterP1);
+        rowsP1 = new String[Width * Length];
+        Arrays.fill(rowsP1, "");
+        adapterP1 = new ArrayAdapter<>(this, R.layout.item, rowsP1);
+        P1.setAdapter(adapterP1);
         Toast.makeText(this, "Đặt tàu kích thước " + shipSizes[currentShipIndex], Toast.LENGTH_SHORT).show();
+
         P1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -100,7 +106,7 @@ public class ShipLoading extends AppCompatActivity {
                     if (col + shipSize > Length) return;
                     for (int i = 0; i < shipSize; i++) {
                         int pos = row * Length + (col + i);
-                        if (ShipLoading.this.rowsP1[pos].equals("s")) {
+                        if (rowsP1[pos].equals("s")) {
                             canPlace = false;
                             break;
                         }
@@ -110,7 +116,7 @@ public class ShipLoading extends AppCompatActivity {
                     if (row + shipSize > Width) return;
                     for (int i = 0; i < shipSize; i++) {
                         int pos = (row + i) * Length + col;
-                        if (ShipLoading.this.rowsP1[pos].equals("s")) {
+                        if (rowsP1[pos].equals("s")) {
                             canPlace = false;
                             break;
                         }
@@ -121,16 +127,16 @@ public class ShipLoading extends AppCompatActivity {
                 if (canPlace) {
                     for (Position pos : currentShipPositions) {
                         int posIndex = pos.y() * Length + pos.x();
-                        ShipLoading.this.rowsP1[posIndex] = "";
+                        rowsP1[posIndex] = "";
                     }
                     currentShipPositions.clear();
 
                     for (Position pos : newPositions) {
                         int posIndex = pos.y() * Length + pos.x();
-                        ShipLoading.this.rowsP1[posIndex] = "s";
+                        rowsP1[posIndex] = "s";
                         currentShipPositions.add(pos);
                     }
-                    ShipLoading.this.adapterP1.notifyDataSetChanged();
+                    adapterP1.notifyDataSetChanged();
 
                     if (currentShipPositions.size() == shipSize) {
                         P1Ships.add(new Ship(new ArrayList<>(currentShipPositions)));
@@ -143,23 +149,65 @@ public class ShipLoading extends AppCompatActivity {
                             isPlacingShips = false;
                             P1.setEnabled(false);
                             Bot.setEnabled(true);
-                            btnDirection.setText("Tất cả tàu đã đặt! Bắt đầu trò chơi!");
+                            btnDirection.setText("SẴN SÀNG!!!");
                             btnDirection.setTextColor(Color.WHITE);
                             btnDirection.setEnabled(false);
-                            setupGamePlay(rowsP1, adapterP1, Width, Length);
+                            setupGamePlay(rowsBot, adapterBot, Width, Length);
                         }
                     }
                 }
             }
         });
+
         btnDirection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MusicPlayer.getInstance().playClickSound();
                 isHorizontal = !isHorizontal;
-                btnDirection.setText("Đổi chiều xếp tàu: " + (isHorizontal ? "Ngang" : "Dọc"));
+                btnDirection.setText("Hướng: " + (isHorizontal ? "Ngang" : "Dọc"));
             }
         });
+
+        btnRanDom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MusicPlayer.getInstance().playClickSound();
+                if (isPlacingShips) {
+                    P1Ships.clear();
+                    currentShipPositions.clear();
+                    Arrays.fill(rowsP1, "");
+                    adapterP1.notifyDataSetChanged();
+
+                    P1Ships = generateRandomShips(Width, Length, shipSizes, random);
+                    if (P1Ships.isEmpty()) {
+                        Toast.makeText(ShipLoading.this, "Không thể xếp tàu, thử lại!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    for (Ship ship : P1Ships) {
+                        for (Position pos : ship.shipPosition()) {
+                            int posIndex = pos.y() * Length + pos.x();
+                            rowsP1[posIndex] = "s";
+                        }
+                    }
+                    adapterP1.notifyDataSetChanged();
+
+                    isPlacingShips = false;
+                    P1.setEnabled(false);
+                    Bot.setEnabled(true);
+                    btnDirection.setText("SẴN SÀNG!!!");
+                    btnDirection.setTextColor(Color.WHITE);
+                    btnDirection.setEnabled(false);
+                    btnRanDom.setEnabled(false);
+                    btnRanDom.setTextColor(Color.WHITE);
+                    currentShipIndex = shipSizes.length;
+                    setupGamePlay(rowsBot, adapterBot, Width, Length);
+
+                    Toast.makeText(ShipLoading.this, "Đã xếp ngẫu nhiên tàu!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         btnBack.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -170,19 +218,20 @@ public class ShipLoading extends AppCompatActivity {
         });
     }
 
-    // Tạo tàu ngẫu nhiên cho AI
-    private List<Ship> generateRandomShips(int width, int length) {
+    // Hàm tạo tàu ngẫu nhiên
+    private List<Ship> generateRandomShips(int width, int length, int[] shipSizes, Random random) {
         List<Ship> ships = new ArrayList<>();
-        List<Position> usedPositions = new ArrayList<Position>();
+        List<Position> usedPositions = new ArrayList<>();
 
         for (int shipSize : shipSizes) {
             boolean placed = false;
-            while (!placed) {
+            int maxAttempts = 100;
 
+            while (!placed && maxAttempts > 0) {
                 boolean isHorizontal = random.nextBoolean();
-                List<Position> shipPositions = new ArrayList<Position>();
-
+                List<Position> shipPositions = new ArrayList<>();
                 int startX, startY;
+
                 if (isHorizontal) {
                     startX = random.nextInt(length - shipSize + 1);
                     startY = random.nextInt(width);
@@ -191,7 +240,6 @@ public class ShipLoading extends AppCompatActivity {
                     startY = random.nextInt(width - shipSize + 1);
                 }
 
-                // Tạo vị trí cho tàu
                 boolean canPlace = true;
                 for (int i = 0; i < shipSize; i++) {
                     int x = isHorizontal ? startX + i : startX;
@@ -204,42 +252,50 @@ public class ShipLoading extends AppCompatActivity {
                     }
                     shipPositions.add(pos);
                 }
+
                 if (canPlace) {
                     ships.add(new Ship(shipPositions));
                     usedPositions.addAll(shipPositions);
                     placed = true;
                 }
+                maxAttempts--;
+            }
+
+            if (!placed) {
+                ships.clear();
+                return ships;
             }
         }
         return ships;
     }
 
-    private void setupGamePlay(String[] rowsP1, ArrayAdapter<String> adapterP1, int Width, int Length) {
+    private void setupGamePlay(String[] rowsBot, ArrayAdapter<String> adapterBot, int Width, int Length) {
         Bot.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MusicPlayer.getInstance().playClickSound();
                 if (turn && !isPlacingShips) {
-                    if (!rowsP1[position].isEmpty()) {
+                    if (!rowsBot[position].isEmpty()) {
                         return;
                     }
                     Position hitPosition = new Position(position % Length, position / Length);
                     if (hitted(hitPosition, BotShips)) {
-                        rowsP1[position] = "O";
+                        rowsBot[position] = "O";
                     } else {
-                        rowsP1[position] = "X";
+                        rowsBot[position] = "X";
                         turn = false;
                         Bot.setEnabled(false);
-                        autoShot(ShipLoading.this.rowsP1, ShipLoading.this.adapterP1, BotShips, myAI, Length);
+                        autoShot(rowsP1, adapterP1, P1Ships, myAI, Length);
                     }
-                    if (Wining(BotShips, rowsP1, Length)) {
+                    if (Wining(BotShips, rowsBot, Length)) {
                         showWinDialog("VICTORI");
                     }
-                    adapterP1.notifyDataSetChanged();
+                    adapterBot.notifyDataSetChanged();
                 }
             }
         });
     }
+
     public boolean hitted(Position hitPosition, List<Ship> ships) {
         for (Ship a : ships) {
             if (a.hitted(hitPosition)) {
@@ -249,8 +305,7 @@ public class ShipLoading extends AppCompatActivity {
         return false;
     }
 
-    // Logic bắn tự động của AI
-    public void autoShot(String[] rowsP2, ArrayAdapter<String> adapterP2, List<Ship> P2Ships, AI myAI, int Length) {
+    public void autoShot(String[] rowsP1, ArrayAdapter<String> adapterP1, List<Ship> P1Ships, AI myAI, int Length) {
         final Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(new Runnable() {
             @Override
@@ -266,11 +321,11 @@ public class ShipLoading extends AppCompatActivity {
 
                 if (hitted(AIShot, P1Ships)) {
                     MusicPlayer.getInstance().playClickSound();
-                    rowsP2[position] = "O";
+                    rowsP1[position] = "O";
                     if (mode.equals("HARD")) {
                         myAI.addHighValueHits(AIShot);
                         for (Ship ship : P1Ships) {
-                            if (ship.isSunk(rowsP2, Length) && ship.shipPosition().contains(AIShot)) {
+                            if (ship.isSunk(rowsP1, Length) && ship.shipPosition().contains(AIShot)) {
                                 myAI.removeHighValueHitsForShip(ship.shipPosition());
                                 break;
                             }
@@ -278,22 +333,23 @@ public class ShipLoading extends AppCompatActivity {
                     }
                 } else {
                     MusicPlayer.getInstance().playClickSound();
-                    rowsP2[position] = "X";
+                    rowsP1[position] = "X";
                     turn = true;
                     Bot.setEnabled(true);
                 }
-                adapterP2.notifyDataSetChanged();
+                adapterP1.notifyDataSetChanged();
 
-                if (Wining(P1Ships, rowsP2, Length)) {
+                if (Wining(P1Ships, rowsP1, Length)) {
                     showWinDialog("DEFEAT");
                 }
 
                 if (!turn) {
-                    autoShot(rowsP2, adapterP2, P2Ships, myAI, Length);
+                    autoShot(rowsP1, adapterP1, P1Ships, myAI, Length);
                 }
             }
         }, 1000);
     }
+
     private void showWinDialog(String message) {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setMessage(message)
@@ -320,6 +376,7 @@ public class ShipLoading extends AppCompatActivity {
         P1.setEnabled(false);
         return true;
     }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -331,6 +388,4 @@ public class ShipLoading extends AppCompatActivity {
         super.onResume();
         MusicPlayer.getInstance().resume();
     }
-
-
 }

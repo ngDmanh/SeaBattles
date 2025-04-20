@@ -16,22 +16,37 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.15"
-        android:background="@color/white"
+        android:background="@color/Dark_blue"
         android:orientation="horizontal">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <Button
+                android:id="@+id/btnRanDom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="RANDOM"
+                app:backgroundTint="@null"
+                android:background="@drawable/custom_button"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <Button
                 android:id="@+id/btndirection"
-                android:layout_width="285dp"
+                android:layout_width="150dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                android:text="Đổi chiều xếp tàu: Ngang"
+                android:text="Hướng: Ngang"
                 app:backgroundTint="@null"
                 android:background="@drawable/custom_button"/>
         </LinearLayout>
