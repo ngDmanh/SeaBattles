@@ -10,12 +10,18 @@ public class AI {
     private List<Position> shipHits;
     private List<Position> valueHits;
     private ArrayDeque<Position> highValueHits;
+    private Position lastHit1; // Lần trúng đầu tiên trong chuỗi
+    private Position lastHit2; // Lần trúng thứ hai trong chuỗi
+    private String direction;
 
     public AI(String mode, int width, int length) {
         Mode = mode;
         valueHits = createNewValueHits(width, length);
-        highValueHits = new ArrayDeque<>();
-
+        highValueHits = new ArrayDeque<Position>();
+        shipHits = new ArrayList<Position>();
+        lastHit1 = null;
+        lastHit2 = null;
+        direction = null;
     }
 
     public List<Position> createNewValueHits(int width, int length){
@@ -80,6 +86,57 @@ public class AI {
         }
         // Xóa các vị trí lân cận khỏi highValueHits
         highValueHits.removeAll(positionsToRemove);
+    }
+
+    // Xác định hướng dựa trên hai lần trúng
+    private void determineDirection(Position hit1, Position hit2) {
+        if (hit1.x() == hit2.x() && Math.abs(hit1.y() - hit2.y()) == 1) {
+            direction = "VERTICAL";
+        } else if (hit1.y() == hit2.y() && Math.abs(hit1.x() - hit2.x()) == 1) {
+            direction = "HORIZONTAL";
+        } else {
+            direction = null; // Các lần trúng không liền kề
+        }
+    }
+
+    // Lấy vị trí tiếp theo để bắn theo hướng đã xác định
+    public Position getNextDirectionalShot(Position lastHit) {
+        if (direction == null || lastHit == null) return null;
+        List<Position> candidates = new ArrayList<>();
+        if (direction.equals("HORIZONTAL")) {
+            Position left = lastHit.getNeibourLeft();
+            Position right = lastHit.getNeibourRight();
+            if (valueHits.contains(left)) candidates.add(left);
+            if (valueHits.contains(right)) candidates.add(right);
+        } else if (direction.equals("VERTICAL")) {
+            Position up = lastHit.getNeibourUp();
+            Position down = lastHit.getNeibourDown();
+            if (valueHits.contains(up)) candidates.add(up);
+            if (valueHits.contains(down)) candidates.add(down);
+        }
+        if (candidates.isEmpty()) {
+            // Không có vị trí hợp lệ theo hướng này, thử đầu kia nếu có hai lần trúng
+            if (lastHit2 != null && lastHit.equals(lastHit2)) {
+                return getNextDirectionalShot(lastHit1);
+            }
+            return null;
+        }
+        Random random = new Random();
+        return candidates.get(random.nextInt(candidates.size()));
+    }
+
+    // Cập nhật theo dõi lần trúng cho chế độ HARD
+    public void updateHitTracking(Position hit) {
+        if (lastHit1 == null) {
+            lastHit1 = hit;
+        } else if (lastHit2 == null) {
+            lastHit2 = hit;
+            determineDirection(lastHit1, lastHit2);
+        } else {
+            // Tiếp tục theo hướng, cập nhật lần trúng cuối
+            lastHit2 = hit;
+        }
+        shipHits.add(hit);
     }
 
     public List<Position> getValueHits() {

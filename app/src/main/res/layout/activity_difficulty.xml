@@ -7,18 +7,22 @@
     android:layout_height="match_parent"
     android:background="@drawable/back_ground"
     tools:context=".Difficulty">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Low_white">
+        android:background="@color/Low_white"
+        tools:layout_editor_absoluteX="89dp"
+        tools:layout_editor_absoluteY="0dp">
+
         <Button
             android:id="@+id/btnHTPlay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="164dp"
-            app:backgroundTint="@null"
             android:background="@drawable/custom_button"
             android:text="HOW TO PLAY"
+            app:backgroundTint="@null"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -27,27 +31,39 @@
             android:id="@+id/btnEasy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="88dp"
-            android:layout_marginEnd="68dp"
-            app:backgroundTint="@null"
             android:background="@drawable/custom_button"
+            android:layout_marginStart="20dp"
             android:text="EASY"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvDifficulty" />
+            app:backgroundTint="@null"
+            app:layout_constraintBottom_toBottomOf="@+id/btnNormal"
+            app:layout_constraintEnd_toStartOf="@+id/btnNormal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btnNormal" />
+
+        <Button
+            android:id="@+id/btnNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/custom_button"
+            android:text="NORMAL"
+            app:backgroundTint="@null"
+            app:layout_constraintBottom_toBottomOf="@+id/btnHard"
+            app:layout_constraintEnd_toStartOf="@+id/btnHard"
+            app:layout_constraintTop_toTopOf="@+id/btnHard"
+            app:layout_constraintVertical_bias="0.0" />
 
         <Button
             android:id="@+id/btnHard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:backgroundTint="@null"
+            android:layout_marginTop="88dp"
+            android:layout_marginEnd="20dp"
             android:background="@drawable/custom_button"
             android:text="HARD"
-            app:layout_constraintBottom_toBottomOf="@+id/btnEasy"
-            app:layout_constraintEnd_toStartOf="@+id/btnEasy"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btnEasy"
-            app:layout_constraintVertical_bias="1.0" />
+            app:backgroundTint="@null"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvDifficulty" />
 
         <TextView
             android:id="@+id/tvDifficulty"
@@ -67,9 +83,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="40dp"
-            app:backgroundTint="@null"
             android:background="@drawable/custom_button"
             android:text="Back"
+            app:backgroundTint="@null"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.1"

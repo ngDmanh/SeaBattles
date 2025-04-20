@@ -53,6 +53,7 @@ public class ShipLoading extends AppCompatActivity {
         btnDirection = findViewById(R.id.btndirection);
         btnBack = findViewById(R.id.btnBack);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,7 +139,7 @@ public class ShipLoading extends AppCompatActivity {
                         currentShipIndex++;
 
                         if (currentShipIndex < shipSizes.length) {
-                            Toast.makeText(ShipLoading.this, "Đặt tàu kích thước " + shipSizes[currentShipIndex], Toast.LENGTH_LONG).show();
+                            Toast.makeText(ShipLoading.this, "Đặt tàu kích thước " + shipSizes[currentShipIndex], Toast.LENGTH_SHORT).show();
                         } else {
                             isPlacingShips = false;
                             P1.setEnabled(false);
@@ -152,6 +153,7 @@ public class ShipLoading extends AppCompatActivity {
                 }
             }
         });
+
         btnDirection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -160,6 +162,7 @@ public class ShipLoading extends AppCompatActivity {
                 btnDirection.setText("Đổi chiều xếp tàu: " + (isHorizontal ? "Ngang" : "Dọc"));
             }
         });
+
         btnBack.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -233,13 +236,14 @@ public class ShipLoading extends AppCompatActivity {
                         autoShot(ShipLoading.this.rowsP1, ShipLoading.this.adapterP1, BotShips, myAI, Length);
                     }
                     if (Wining(BotShips, rowsP1, Length)) {
-                        showWinDialog("VICTORI");
+                        showWinDialog("VICTORY");
                     }
                     adapterP1.notifyDataSetChanged();
                 }
             }
         });
     }
+
     public boolean hitted(Position hitPosition, List<Ship> ships) {
         for (Ship a : ships) {
             if (a.hitted(hitPosition)) {
@@ -255,23 +259,34 @@ public class ShipLoading extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Position AIShot;
-                if (mode.equals("HARD") && !myAI.getHighValueHits().isEmpty()) {
+                Position AIShot = null;
+                if (mode.equals("EASY")){
+                    AIShot = myAI.rand();
+                } else if (mode.equals("NORMAL") && !myAI.getHighValueHits().isEmpty()) {
                     AIShot = myAI.getHighValueHits().pollFirst();
                     myAI.getValueHits().remove(AIShot);
-                } else {
-                    AIShot = myAI.rand();
+                } if (mode.equals("HARD") && myAI.shipHits() != null && !myAI.getValueHits().isEmpty()) {
+                    AIShot = myAI.getNextDirectionalShot(myAI.shipHits().isEmpty() ? null : myAI.shipHits().get(myAI.shipHits().size() - 1));
+                    if (AIShot != null) {
+                        myAI.getValueHits().remove(AIShot);
+                        myAI.getHighValueHits().remove(AIShot);
+                    } else {
+                        AIShot = myAI.rand();
+                    }
                 }
                 int position = AIShot.x() + AIShot.y() * Length;
 
                 if (hitted(AIShot, P1Ships)) {
                     MusicPlayer.getInstance().playClickSound();
                     rowsP2[position] = "O";
-                    if (mode.equals("HARD")) {
+                    if (mode.equals("NORMAL")) {
                         myAI.addHighValueHits(AIShot);
+                    } else if (mode.equals("HARD")){
+                        myAI.updateHitTracking(AIShot);
                         for (Ship ship : P1Ships) {
                             if (ship.isSunk(rowsP2, Length) && ship.shipPosition().contains(AIShot)) {
                                 myAI.removeHighValueHitsForShip(ship.shipPosition());
+                                myAI.resetHighValueHits(); // Đặt lại theo dõi hướng khi tàu chìm
                                 break;
                             }
                         }
@@ -292,8 +307,9 @@ public class ShipLoading extends AppCompatActivity {
                     autoShot(rowsP2, adapterP2, P2Ships, myAI, Length);
                 }
             }
-        }, 1000);
+        }, 300);
     }
+
     private void showWinDialog(String message) {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setMessage(message)

@@ -2,6 +2,7 @@ package com.example.seabattles;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,12 +18,20 @@ public class Difficulty extends AppCompatActivity {
 
         Button easyButton = findViewById(R.id.btnEasy);
         Button hardButton = findViewById(R.id.btnHard);
+        Button normalButton = findViewById(R.id.btnNormal);
         Button backButton = findViewById(R.id.btnBack);
         Button howToPlayButton = findViewById(R.id.btnHTPlay);
 
         easyButton.setOnClickListener(v -> {
             Intent intent = new Intent(Difficulty.this, ShipLoading.class);
             intent.putExtra("DIFFICULTY", "EASY");
+            MusicPlayer.getInstance().playClickSound();
+            startActivity(intent);
+        });
+
+        normalButton.setOnClickListener(view -> {
+            Intent intent = new Intent(Difficulty.this, ShipLoading.class);
+            intent.putExtra("DIFFICULTY", "NORMAL");
             MusicPlayer.getInstance().playClickSound();
             startActivity(intent);
         });
