@@ -6,9 +6,11 @@ import java.util.List;
 
 public class Ship {
     private List<Position> shipPosition;
+    private boolean isHorizontal;
 
-    public Ship(List<Position> shipPosition) {
+    public Ship(List<Position> shipPosition, boolean isHorizontal) {
         this.shipPosition = shipPosition;
+        this.isHorizontal = isHorizontal;
     }
 
     public List<Position> shipPosition() {
@@ -20,6 +22,13 @@ public class Ship {
         return this;
     }
 
+    public boolean isHorizontal() {
+        return isHorizontal;
+    }
+
+    public void setHorizontal(boolean horizontal) {
+        isHorizontal = horizontal;
+    }
 
     public boolean hitted(Position hitPosition){
         return shipPosition.contains(hitPosition);

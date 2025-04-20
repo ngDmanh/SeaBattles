@@ -131,15 +131,28 @@ public class ShipLoading extends AppCompatActivity {
                     }
                     currentShipPositions.clear();
 
-                    for (Position pos : newPositions) {
+                    for (int i = 0; i < newPositions.size(); i++) {
+                        Position pos = newPositions.get(i);
                         int posIndex = pos.y() * Length + pos.x();
                         rowsP1[posIndex] = "s";
                         currentShipPositions.add(pos);
+
+                        View cellView = P1.getChildAt(posIndex);
+                        if (cellView != null) {
+                            if (i == 0) {
+                                // Ô đầu tàu
+                                cellView.setBackgroundResource(isHorizontal ? R.drawable.ship_head_horizontal : R.drawable.ship_head_vertical);
+                            } else if(i == newPositions.size()-1) {
+                                // Ô thân tàu
+                                cellView.setBackgroundResource(isHorizontal ? R.drawable.ship_tail_horizontal : R.drawable.ship_tail_vertical);
+                            } else{
+                                cellView.setBackgroundResource(R.drawable.ship_body);
+                            }
+                        }
                     }
-                    adapterP1.notifyDataSetChanged();
 
                     if (currentShipPositions.size() == shipSize) {
-                        P1Ships.add(new Ship(new ArrayList<>(currentShipPositions)));
+                        P1Ships.add(new Ship(new ArrayList<>(currentShipPositions), isHorizontal));
                         currentShipPositions.clear();
                         currentShipIndex++;
 
@@ -185,12 +198,29 @@ public class ShipLoading extends AppCompatActivity {
                     }
 
                     for (Ship ship : P1Ships) {
-                        for (Position pos : ship.shipPosition()) {
+                        List<Position> positions = ship.shipPosition();
+                        boolean isHorizontal = ship.isHorizontal();
+
+                        for (int i = 0; i < positions.size(); i++) {
+                            Position pos = positions.get(i);
                             int posIndex = pos.y() * Length + pos.x();
                             rowsP1[posIndex] = "s";
+
+                            View cellView = P1.getChildAt(posIndex);
+                            if (cellView != null) {
+                                if (i == 0) {
+                                    // Ô đầu tàu
+                                    cellView.setBackgroundResource(isHorizontal ? R.drawable.ship_head_horizontal : R.drawable.ship_head_vertical);
+                                } else if (i == positions.size() - 1) {
+                                    // Ô cuối tàu
+                                    cellView.setBackgroundResource(isHorizontal ? R.drawable.ship_tail_horizontal : R.drawable.ship_tail_vertical);
+                                } else {
+                                    // Ô giữa tàu
+                                    cellView.setBackgroundResource(R.drawable.ship_body);
+                                }
+                            }
                         }
                     }
-                    adapterP1.notifyDataSetChanged();
 
                     isPlacingShips = false;
                     P1.setEnabled(false);
@@ -254,7 +284,8 @@ public class ShipLoading extends AppCompatActivity {
                 }
 
                 if (canPlace) {
-                    ships.add(new Ship(shipPositions));
+                    Ship newShip = new Ship(shipPositions, isHorizontal);
+                    ships.add(newShip);
                     usedPositions.addAll(shipPositions);
                     placed = true;
                 }
@@ -274,14 +305,17 @@ public class ShipLoading extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MusicPlayer.getInstance().playClickSound();
+                View cellView = Bot.getChildAt(position);
                 if (turn && !isPlacingShips) {
                     if (!rowsBot[position].isEmpty()) {
                         return;
                     }
                     Position hitPosition = new Position(position % Length, position / Length);
                     if (hitted(hitPosition, BotShips)) {
+                        cellView.setBackgroundResource(R.drawable.hit);
                         rowsBot[position] = "O";
                     } else {
+                        cellView.setBackgroundResource(R.drawable.miss);
                         rowsBot[position] = "X";
                         turn = false;
                         Bot.setEnabled(false);
@@ -290,7 +324,6 @@ public class ShipLoading extends AppCompatActivity {
                     if (Wining(BotShips, rowsP1, Length)) {
                         showWinDialog("VICTORY");
                     }
-                    adapterBot.notifyDataSetChanged();
                 }
             }
         });
@@ -318,9 +351,11 @@ public class ShipLoading extends AppCompatActivity {
                     AIShot = myAI.rand();
                 }
                 int position = AIShot.x() + AIShot.y() * Length;
+                View cellView = P1.getChildAt(position);
 
                 if (hitted(AIShot, P1Ships)) {
                     MusicPlayer.getInstance().playClickSound();
+                    cellView.setBackgroundResource(R.drawable.hit);
                     rowsP1[position] = "O";
                     myAI.hitShip(AIShot);
                     if (mode.equals("NORMAL")) {
@@ -375,6 +410,7 @@ public class ShipLoading extends AppCompatActivity {
                     }
                 } else {
                     MusicPlayer.getInstance().playClickSound();
+                    cellView.setBackgroundResource(R.drawable.miss);
                     rowsP1[position] = "X";
                     turn = true;
                     Bot.setEnabled(true);
@@ -389,7 +425,6 @@ public class ShipLoading extends AppCompatActivity {
                         }
                     }
                 }
-                adapterP1.notifyDataSetChanged();
 
                 if (Wining(P1Ships, rowsP1, Length)) {
                     showWinDialog("DEFEAT");

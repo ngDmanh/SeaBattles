@@ -5,4 +5,5 @@
     <color name="Dark_blue">#003671</color>
     <color name="Gray_white">#00FFFFFF</color>
     <color name="Low_white">#80FFFFFF</color>
+    <color name="Low_Green">#4CAF50</color>
 </resources>
