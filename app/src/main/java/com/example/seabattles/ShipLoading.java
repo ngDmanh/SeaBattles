@@ -198,7 +198,6 @@ public class ShipLoading extends AppCompatActivity {
                     P1Ships.clear();
                     currentShipPositions.clear();
                     Arrays.fill(rowsP1, "");
-                    adapterP1.notifyDataSetChanged();
 
                     P1Ships = generateRandomShips(Width, Length, shipSizes, random);
                     if (P1Ships.isEmpty()) {
@@ -410,8 +409,8 @@ public class ShipLoading extends AppCompatActivity {
                                             }
                                         }
                                     }
-                                } else {
-                                    // Không xác định được hướng, thêm ô lân cận
+                                }
+                                else{
                                     myAI.addHighValueHits(AIShot);
                                 }
                             }
